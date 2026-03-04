@@ -14,6 +14,7 @@ export default function StudentDisplay() {
         "https://api.escuelajs.co/api/v1/users",
         fetcher
     );
+
     if(error) return <h1>Fetch Data Error!</h1>
     if(isLoading) return <h1>Data Loading...</h1>
   return (

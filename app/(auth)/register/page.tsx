@@ -1,5 +1,9 @@
+import { BugReportForm } from "@/components/forms/bug-form";
+
 export default function Register(){
-    return <div>
-        Register Page
-    </div>
+    return (
+        <main>
+            <BugReportForm />
+        </main>
+    )
 }
