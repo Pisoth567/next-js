@@ -27,7 +27,6 @@ const formSchema = z.object({
 });
 
 export default function ProductForm({getData}:{getData: Promise<Category[]>}) {
-  console.log("hello");
   
   const data = use(getData);
 
@@ -36,7 +35,7 @@ export default function ProductForm({getData}:{getData: Promise<Category[]>}) {
     defaultValues: {
       title: "",
       price: 0,
-      description: "",
+      description: "", 
       categoryId: 0,
       image: undefined,
     },
@@ -45,7 +44,6 @@ export default function ProductForm({getData}:{getData: Promise<Category[]>}) {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log("Form values:", values);
 
-
     const newProduct = {
       title: values.title,
       price: values.price,
@@ -53,11 +51,9 @@ export default function ProductForm({getData}:{getData: Promise<Category[]>}) {
       categoryId: values.categoryId,
       images: values.image,
     };
-
     try {
       const data = await insertProduct(newProduct);
       console.log("Inserted product:", data);
-
       form.reset();
       alert("Product inserted successfully!");
     } catch (error) {

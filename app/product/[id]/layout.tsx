@@ -7,7 +7,6 @@ export default function ProductDetailsLayout({
     return(
         <>
             {children}
-            <h1 className="text-center font-bold text-xl mt-5 text-amber-900">Featured Products</h1>
         </>
     )
 }

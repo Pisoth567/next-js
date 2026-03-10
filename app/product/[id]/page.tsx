@@ -1,27 +1,31 @@
-import { Product } from "@/lib/type/product";
 
-async function getProductById(id: string){
-  const res = await fetch(`https://api.escuelajs.co/api/v1/products/${id}`);
-  const data = await res.json();
-  return data; 
-}
+import Image from "next/image";
+import { getProductById } from "@/lib/data/products";
+import AddToCartButton from "@/components/p-card/ButtonAddToCart";
 
-
-export default async function ProductDetails(
-  {params}: {params: Promise<{id: string}>}
-) {
-  const { id } =await params;
-  const product: Product = await getProductById(id);
-  console.log("Product: ",product);
-  
+export default async function ProductDetail({params}: {params:Promise<{id: string}>}) {
+  const {id} = await params;
+  const product = await getProductById(id);
   return (
-    <div className="bg-pink-300 w-full py-8">
-      <h1 className="text-center text-2xl font-bold text-black">
-        Here is Product: {product.title}
-      </h1>
-      <img src={product.images[0]} alt={product.title} className="mx-auto w-64 h-64 object-cover" />
-      <p className="text-center mt-4">{product.description}</p>
-      <p className="text-center mt-2 font-bold text-blue-600">${product.price}</p>
-    </div>
+    <main className="w-[80%] mx-auto mt-10 flex gap-10" key={product.id}>
+      <Image
+        src={product.images[0]}
+        alt={product.title}
+        width={400}
+        height={400}
+        className="rounded-lg"
+      />
+      <div className="space-y-4">
+        <h2 className="text-2xl font-bold">{product.title}</h2>
+        <p className="text-gray-600">{product.description}</p>
+        <p className="text-xl font-semibold text-green-600">
+          ${product.price}
+        </p>
+        
+        <AddToCartButton product={product} />
+        
+      </div>
+
+    </main>
   );
 }
