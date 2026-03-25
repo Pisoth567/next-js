@@ -2,7 +2,6 @@
 
 import { createContext, useContext, useState, ReactNode } from "react";
 
-// Define type for product
 type Product = {
   id: number;
   title: string;

@@ -3,6 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const fakeProductApi = createApi({
     reducerPath: "productApi",
     baseQuery: fetchBaseQuery({baseUrl: process.env.NEXT_PUBLIC_API_URL}),
+    tagTypes: ["Product"],
     endpoints: (build) => ({})
     
 }) 

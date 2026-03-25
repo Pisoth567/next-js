@@ -124,7 +124,7 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "rukminim2.flixcart.com",
+        hostname: "ph-live-01.slatic.net",
         pathname: "/**",
       },
       {
@@ -134,12 +134,22 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "s3.amazonaws.com",
+        hostname: "www.alleycat.org",
         pathname: "/**",
       },
       {
         protocol: "https",
-        hostname: "th.bing.com",
+        hostname: "i.pinimg.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "pravatar.cc",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "example.com",
         pathname: "/**",
       },
     ],

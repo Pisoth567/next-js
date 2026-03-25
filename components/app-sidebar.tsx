@@ -52,18 +52,18 @@ const data = {
   ],
   navMain: [
     {
-      title: "Playground",
+      title: "Admin Dashboard",
       url: "#",
       icon: SquareTerminal,
       isActive: true,
       items: [
         {
-          title: "History",
-          url: "#",
+          title: "Dashbord",
+          url: "/dashboard",
         },
         {
-          title: "Starred",
-          url: "#",
+          title: "Product List",
+          url: "/dashboard/product",
         },
         {
           title: "Settings",
@@ -164,7 +164,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        {/* <NavProjects projects={data.projects} />Starred */}
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />

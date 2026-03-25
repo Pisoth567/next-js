@@ -14,53 +14,73 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { insertProduct } from "@/lib/data/products";
-import { Category } from "@/lib/type/product";
+import { Category, Product } from "@/lib/type/product";
 import { use } from "react";
+import { useAddProductMutation } from "@/lib/features/product/productApi";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   title: z.string().min(5, "Title must be at least 5 characters."),
-  price: z.coerce.number().min(1000, "Price must be at least 1000៛"),
+  price: z.coerce.number().min(100, "Price must be at least 100"),
   description: z.string().min(5, "Description must be at least 5 characters."),
   categoryId: z.coerce.number().min(1, "Please select category"),
   image: z.any().refine((file) => file instanceof File, "Image is required"),
 });
 
-export default function ProductForm({getData}:{getData: Promise<Category[]>}) {
-  
-  const data = use(getData);
+export default function ProductForm({
+  getData,
+  product,
+  isEdit
+}: {
+  getData: Promise<Category[]>;
+  product: Product;
+  isEdit?: boolean
+}) {
+
+  const dataCategory = use(getData);
+
+  const [addProduct, { data, isLoading, isSuccess }] = useAddProductMutation();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
       price: 0,
-      description: "", 
+      description: "",
       categoryId: 0,
       image: undefined,
     },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log("Form values:", values);
+  try {
+    const formData = new FormData();
+    formData.append("file", values.image);
 
-    const newProduct = {
+    const uploadRes = await fetch("https://api.escuelajs.co/api/v1/files/upload", {
+      method: "POST",
+      body: formData,
+    });
+    const fileData = await uploadRes.json();
+    
+    const imageUrl = fileData.location;
+
+    const productPayload = {
       title: values.title,
       price: values.price,
       description: values.description,
       categoryId: values.categoryId,
-      images: values.image,
+      images: [imageUrl],
     };
-    try {
-      const data = await insertProduct(newProduct);
-      console.log("Inserted product:", data);
-      form.reset();
-      alert("Product inserted successfully!");
-    } catch (error) {
-      console.error(error);
-      alert("Failed to insert product");
-    }
-  }  
+
+    await addProduct(productPayload).unwrap();
+    toast.success("Product created successfully");
+    
+  } catch (error) {
+    console.error("Error:", error);
+    toast.error("Something went wrong");
+  }
+}
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -115,15 +135,11 @@ export default function ProductForm({getData}:{getData: Promise<Category[]>}) {
                 <SelectValue placeholder="Choose category" />
               </SelectTrigger>
               <SelectContent>
-                <SelectContent>
-                    {
-                      data.map(c=>(
-                        <SelectItem key={c.id} value={c.id.toString()}>
-                          {c.name}
-                        </SelectItem>
-                      ))
-                    }
-                </SelectContent>
+                {dataCategory.map((c) => (
+                  <SelectItem key={c.id} value={c.id.toString()}>
+                    {c.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
 
@@ -139,14 +155,17 @@ export default function ProductForm({getData}:{getData: Promise<Category[]>}) {
         render={({ field, fieldState }) => (
           <Field data-invalid={fieldState.invalid}>
             <FieldLabel>Upload Image</FieldLabel>
-
             <Input
               type="file"
               accept="image/*"
-              name="image"
-              onChange={(e) => field.onChange(e.target.files?.[0])}
+              // We don't use {...field} here because file inputs are "uncontrolled"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  field.onChange(file); // Stores the actual File object in Zod
+                }
+              }}
             />
-
             {fieldState.error && <FieldError errors={[fieldState.error]} />}
           </Field>
         )}
@@ -154,17 +173,8 @@ export default function ProductForm({getData}:{getData: Promise<Category[]>}) {
 
       {/* BUTTONS */}
       <div className="flex gap-4">
-        <Button type="submit" className="w-full">
+        <Button type="submit" className="w-full" disabled={isLoading}>
           Submit
-        </Button>
-
-        <Button
-          type="button"
-          variant="outline"
-          className="w-full"
-          onClick={() => form.reset()}
-        >
-          Reset
         </Button>
       </div>
     </form>
