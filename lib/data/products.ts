@@ -30,5 +30,5 @@ type ProductRequestById = {
 export async function getProductById(id: string){
     const data = await fetch(`https://api.escuelajs.co/api/v1/products/${id}`)
     const res:Product = await data.json()
-    return res;
+    return(res);
 }

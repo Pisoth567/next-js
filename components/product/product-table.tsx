@@ -20,19 +20,15 @@ import {
   useGetProductsQuery,
 } from "@/lib/features/product/productApi";
 import { MoreHorizontalIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { toast } from "sonner";
 
-
-
 export function ProductTable() {
-  const router = useRouter()
-  const { data, isLoading, isError } = useGetProductsQuery();
+  const { data} = useGetProductsQuery();
   const [deleteProduct, { isLoading: isDeleting }] = useDeleteProductMutation();
 
   const handleDelete = async (id: number) => {
     try {
-      
       await deleteProduct(id).unwrap();
       toast.success("Product deleted!");
     } catch (error) {
@@ -65,15 +61,15 @@ export function ProductTable() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={()=> router.push(`product/edit/${product.id}`)}>
-                    Edit
+                  <DropdownMenuItem>
+                    <Link href={`/dashboard?editById=${product.id}`}>Edit</Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem>Duplicate</DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     variant="destructive"
                     disabled={isDeleting}
-                    onClick={() => handleDelete(product.id)}>
+                    onClick={() => handleDelete(product.id)}
+                  >
                     {isDeleting ? "Deleting..." : "Delete"}
                   </DropdownMenuItem>
                 </DropdownMenuContent>

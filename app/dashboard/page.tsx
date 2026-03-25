@@ -1,17 +1,17 @@
+// app/dashboard/page.tsx
 import ProductForm from "@/components/forms/product-form";
 import { categories } from "@/lib/data/categories";
-import Link from "next/link";
+import { getProductById } from "@/lib/data/products";
 
-export default function DashbaordPage() {
+export default async function DashboardPage({ searchParams }: { searchParams?: { editById?: string } }) {
+
+  const product = searchParams?.editById ? getProductById(searchParams.editById) : null;
+
   return (
-    <main>
-      <h1 className="text-2xl font-bold">Dashboard</h1>
-      <Link href="/photos/1" className="text-blue-500 underline">
-        Go to Photo
-      </Link>
+    <main className="p-6">
+      <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
 
-      <ProductForm getData={categories()}/>
-
+      <ProductForm categories={categories()} product={product} />
     </main>
   );
 }
